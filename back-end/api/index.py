@@ -2,11 +2,58 @@ import os
 from flask import Flask, flash, request, redirect
 from werkzeug.utils import secure_filename
 import PyPDF2
-import textract
 import re
 import string
+import sklearn
+import joblib
 import pandas as pd
-import matplotlib.pyplot as plt
+import json
+from pandas import json_normalize
+
+UPLOAD_FOLDER = ('api/uploads')
+ALLOWED_EXTENSIONS = {'pdf'}
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+turnover_model = joblib.load('model/turnover_model.save')
+
+def save_user_turnover(username, df):
+    output = turnover_model.predict_proba(df)
+
+    file_path = 'api/user_data/' + username + '.json'
+    f = open(file_path)
+    person_json = json.loads(f)
+    f.close()
+
+    turnover = {"turnover": [i[1] for i in output][0]}
+    person_json.update(turnover)
+
+    file_path = 'api/user_data/' + username + '.json'
+    f = open(file_path, "w")
+    f.write(person_json)
+    f.close()
+
+def load_json_into_df(username):
+    file_path = 'api/jsons/' + username + '.json'
+    f = open(file_path)
+    person_json = json.loads(f)
+    df = json_normalize(person_json)
+    df.drop('name', inplace=True, axis=1)
+    df.drop('event', inplace=True, axis=1)
+    return df
+
+def saving_user_json(username, data):
+    user_data = json.dumps(data, indent=4)
+    file_path = 'api/jsons/' + username + '.json'
+
+    f = open(file_path, "w")
+    f.write(user_data)
+    f.close()
+
+saving_user_json('placeholder', [{"name": "Jonga", "event": 1, "relative_incoming": 1, "efficiency": 0.5, "project_adaptation": 3, "competencies": 0.5, "carreer_development": 0.5}])
+df = load_json_into_df('placeholder')
+save_user_turnover('placeholder', df)
 
 def write_text(filename, text):
     filename = filename.replace('.pdf', '')
@@ -39,12 +86,6 @@ def read_pdf(filename):
     text = cleaning_text(text)
     write_text(filename, text)
     return text
-
-UPLOAD_FOLDER = ('api/uploads')
-ALLOWED_EXTENSIONS = {'pdf'}
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
