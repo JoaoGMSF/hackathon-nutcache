@@ -128,3 +128,15 @@ def post_user_info():
     df = load_json_into_df(username)
     save_user_turnover(username, df)
     return user_json, 201
+
+@app.route('/get_user_info', methods=['GET'])
+def get_user_info():
+    args = request.args
+    username = args.get("name")
+
+    file_path = 'api/user_data/' + username + '.json'
+    
+    with open(file_path, 'r', encoding='utf-8') as f:
+        person_json = json.load(f)
+    f.close()
+    return person_json, 200
