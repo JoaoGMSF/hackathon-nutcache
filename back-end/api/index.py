@@ -22,8 +22,9 @@ def save_user_turnover(username, df):
     output = turnover_model.predict_proba(df)
 
     file_path = 'api/user_data/' + username + '.json'
-    f = open(file_path)
-    person_json = json.loads(f)
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        person_json = json.load(f)
     f.close()
 
     turnover = {"turnover": [i[1] for i in output][0]}
@@ -31,13 +32,16 @@ def save_user_turnover(username, df):
 
     file_path = 'api/user_data/' + username + '.json'
     f = open(file_path, "w")
-    f.write(person_json)
+    f.write(str(person_json))
     f.close()
 
 def load_json_into_df(username):
     file_path = 'api/jsons/' + username + '.json'
-    f = open(file_path)
-    person_json = json.loads(f)
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        person_json = json.load(f)
+    f.close()
+
     df = json_normalize(person_json)
     df.drop('name', inplace=True, axis=1)
     df.drop('event', inplace=True, axis=1)
@@ -51,9 +55,9 @@ def saving_user_json(username, data):
     f.write(user_data)
     f.close()
 
-saving_user_json('placeholder', [{"name": "Jonga", "event": 1, "relative_incoming": 1, "efficiency": 0.5, "project_adaptation": 3, "competencies": 0.5, "carreer_development": 0.5}])
-df = load_json_into_df('placeholder')
-save_user_turnover('placeholder', df)
+#saving_user_json('placeholder', [{"name": "Jonga", "event": 1, "relative_incoming": 1, "efficiency": 0.5, "project_adaptation": 3, "competencies": 0.5, "carreer_development": 0.5}])
+#df = load_json_into_df('placeholder')
+#save_user_turnover('placeholder', df)
 
 def write_text(filename, text):
     filename = filename.replace('.pdf', '')
