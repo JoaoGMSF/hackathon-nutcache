@@ -8,31 +8,36 @@ import string
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def writeText(filename):
-    f = open('api/test.txt', "a")
-    f.write(filename)
+def write_text(filename, text):
+    filename = filename.replace('.pdf', '')
+    file_path = 'api/converted_pdfs/' + filename + '.txt'
+    
+    f = open(file_path, "w")
+    f.write(text)
     f.close()
 
-def cleaningText(text):
+def cleaning_text(text):
     text = text.lower()
     text = re.sub(r'\d+','',text)
     text = text.translate(str.maketrans('','',string.punctuation))
     return text
 
-def readPdf(filename):
-    pdfFileObj = open(filename,'rb')
-    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-    num_pages = pdfReader.numPages
+def read_pdf(filename):
+    filePath = 'api/uploads/' + filename
+    pdf_file_obj = open(filePath, 'rb')
+    pdf_reader = PyPDF2.PdfFileReader(pdf_file_obj)
+    num_pages = pdf_reader.numPages
 
     count = 0
     text = ""
 
     while count < num_pages:
-        pageObj = pdfReader.getPage(count)
+        page_obj = pdf_reader.getPage(count)
         count +=1
-        text += pageObj.extractText()
+        text += page_obj.extractText()
 
-    text = cleaningText(text)
+    text = cleaning_text(text)
+    write_text(filename, text)
     return text
 
 UPLOAD_FOLDER = ('api/uploads')
@@ -58,6 +63,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            read_pdf(filename)
             return "File saved"
     return '''
     <!doctype html>
