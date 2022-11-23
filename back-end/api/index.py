@@ -18,6 +18,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 turnover_model = joblib.load('model/turnover_model.save')
 
+def read_keywords():
+    file_path = 'api/keywords.json'
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        keywords = json.load(f)
+    f.close()
+
 def save_user_turnover(username, df):
     output = turnover_model.predict_proba(df)
 
