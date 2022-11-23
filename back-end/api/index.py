@@ -55,10 +55,6 @@ def saving_user_json(username, data):
     f.write(user_data)
     f.close()
 
-#saving_user_json('placeholder', [{"name": "Jonga", "event": 1, "relative_incoming": 1, "efficiency": 0.5, "project_adaptation": 3, "competencies": 0.5, "carreer_development": 0.5}])
-#df = load_json_into_df('placeholder')
-#save_user_turnover('placeholder', df)
-
 def write_text(filename, text):
     filename = filename.replace('.pdf', '')
     file_path = 'api/converted_pdfs/' + filename + '.txt'
@@ -124,4 +120,12 @@ def upload_file():
 def post_user_info():
     user_json = request.json
     user_json = json.dumps(user_json, default=str)
+    
+    temp_df = pd.read_json(user_json, lines=True)
+    username = temp_df['name'].values[0]
+    print(username)
+
+    saving_user_json(username, user_json)
+    df = load_json_into_df(username)
+    save_user_turnover(username, df)
     return user_json, 201
