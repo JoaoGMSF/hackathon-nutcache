@@ -1,0 +1,11 @@
+{
+    "keywords": [
+        {"technology": "javascript" , "training":"introduction to js"},
+        {"technology": "python" , "training":"python for beginners"},
+        {"technology": "java" , "training":"learning java with fun"},
+        {"technology": "javascript" , "training":"introduction to js"},
+        {"technology": "linux" , "training":"how to master linux"},
+        {"technology": "computer vision" , "training":"learn to build edge detection with CNN"},
+        {"technology": "embedded systems" , "training":"motion control in omnidiretional robots"}
+        ]
+}
