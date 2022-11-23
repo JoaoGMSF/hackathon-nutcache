@@ -119,3 +119,9 @@ def upload_file():
       <input type=submit value=Upload>
     </form>
     '''
+
+@app.route('/post_user_info', methods=['POST'])
+def post_user_info():
+    user_json = request.json
+    user_json = json.dumps(user_json, default=str)
+    return user_json, 201
