@@ -30,9 +30,8 @@ def save_user_turnover(username, df):
     turnover = {"turnover": [i[1] for i in output][0]}
     person_json.update(turnover)
 
-    file_path = 'api/user_data/' + username + '.json'
-    f = open(file_path, "w")
-    f.write(str(person_json))
+    with open(file_path, 'w') as f:
+        json.dump(person_json, f)
     f.close()
 
 def load_json_into_df(username):
