@@ -7,9 +7,9 @@ name = "pypi"
 flask = "*"
 werkzeug = "*"
 pypdf2 = "*"
+joblib = "*"
+scikit-learn = "*"
 pandas = "*"
-textract = "*"
-matplotlib = "*"
 
 [dev-packages]
 
